@@ -5,6 +5,8 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,12 +15,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.pirone.adliz.repository.ServiceCategoryRepository;
 import br.com.pirone.adliz.exception.ResourceNotFoundException;
-import br.com.pirone.adliz.model.ServiceCategory;;
+import br.com.pirone.adliz.model.ServiceCategory;
+import br.com.pirone.adliz.repository.ServiceCategoryRepository;;
 
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
-@RequestMapping("/servicecategory")
+@RequestMapping("/api")
 public class ServiceCategoryController {
 	
 	@Autowired
@@ -30,9 +33,11 @@ public class ServiceCategoryController {
 	}
 	
 	@PostMapping("/serviceCategory")
-	public ServiceCategory createServiceCategory(@Valid @RequestBody ServiceCategory serviceCategory) {
-		return serviceCategoryRepository.save(serviceCategory);
+	public String createServiceCategory(@Valid @RequestBody ServiceCategory serviceCategory, Errors errors) {
+		serviceCategoryRepository.save(serviceCategory);
+		return serviceCategory.getName() +" gravada com sucesso.";
 	}
+
 	
 	@GetMapping("/serviceCategory/{id}")
 	public ServiceCategory getServiceCategoryById(@PathVariable(value = "id") Long serviceCategoryId) {

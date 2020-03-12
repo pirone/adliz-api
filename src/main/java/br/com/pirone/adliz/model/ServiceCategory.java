@@ -1,6 +1,7 @@
 package br.com.pirone.adliz.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "service_category")
@@ -10,6 +11,8 @@ public class ServiceCategory {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	@NotBlank
+	@Column(unique = true)
 	private String name;
 	
 	private String description;
