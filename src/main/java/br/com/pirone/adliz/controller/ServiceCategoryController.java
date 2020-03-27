@@ -29,13 +29,13 @@ public class ServiceCategoryController {
 	
 	@GetMapping("/serviceCategory")
 	public List<ServiceCategory> getAllServicesCategories() {
-		return serviceCategoryRepository.findAll();
+		return serviceCategoryRepository.findByOrderById();
 	}
 	
 	@PostMapping("/serviceCategory")
 	public String createServiceCategory(@Valid @RequestBody ServiceCategory serviceCategory, Errors errors) {
 		serviceCategoryRepository.save(serviceCategory);
-		return serviceCategory.getName() +" gravada com sucesso.";
+		return serviceCategory.getName() +" incluído(a) com sucesso.";
 	}
 
 	
@@ -46,7 +46,7 @@ public class ServiceCategoryController {
 	}
 	
 	@PutMapping("/serviceCategory/{id}")
-	public ServiceCategory updateServiceCategory(@PathVariable(value = "id") Long serviceCategoryId,
+	public String updateServiceCategory(@PathVariable(value = "id") Long serviceCategoryId,
 			@Valid @RequestBody ServiceCategory serviceCategoryDetails) {
 		ServiceCategory serviceCategory = serviceCategoryRepository.findById(serviceCategoryId)
 				.orElseThrow(() -> new ResourceNotFoundException("ServiceCategory", "id", serviceCategoryId));
@@ -54,7 +54,9 @@ public class ServiceCategoryController {
 		serviceCategory.setName(serviceCategoryDetails.getName());
 		serviceCategory.setDescription(serviceCategoryDetails.getDescription());
 		
-		return serviceCategoryRepository.save(serviceCategory);
+		serviceCategoryRepository.save(serviceCategory);
+		
+		return "Categoria de serviço atualizada com sucesso";
 		
 	}
 
