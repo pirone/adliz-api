@@ -25,7 +25,7 @@ public class Service {
 	
 	private BigDecimal price;
 	
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne
 	@JoinColumn(name = "category_id")
 	private ServiceCategory category;
 	
