@@ -1,24 +1,24 @@
-package br.com.pirone.adliz.exception;
+package br.com.pirone.adliz.dto;
 
 import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
 
-public class ApiError {
+public class ApiErrorDTO {
 	 
     private HttpStatus status;
     private String message;
     private List<String> errors;
  
-    public ApiError(HttpStatus status, String message, List<String> errors) {
+    public ApiErrorDTO(HttpStatus status, String message, List<String> errors) {
         super();
         this.status = status;
         this.message = message;
         this.errors = errors;
     }
  
-    public ApiError(HttpStatus status, String message, String error) {
+    public ApiErrorDTO(HttpStatus status, String message, String error) {
         super();
         this.status = status;
         this.message = message;

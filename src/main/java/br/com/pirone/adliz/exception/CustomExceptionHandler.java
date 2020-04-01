@@ -2,11 +2,13 @@ package br.com.pirone.adliz.exception;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -20,8 +22,18 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import br.com.pirone.adliz.dto.ApiErrorDTO;
+
 @ControllerAdvice
 public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
+	
+	ResourceBundle msg = ResourceBundle.getBundle("messages");
+	
+	private HttpHeaders JsonHeader() {
+		HttpHeaders header = new HttpHeaders();
+		header.setContentType(MediaType.APPLICATION_JSON);
+		return header;
+	}
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(
 	  MethodArgumentNotValidException ex, 
@@ -36,8 +48,8 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 	        errors.add(error.getObjectName() + ": " + error.getDefaultMessage());
 	    }
 	     
-	    ApiError apiError = 
-	      new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), errors);
+	    ApiErrorDTO apiError = 
+	      new ApiErrorDTO(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), errors);
 	    return handleExceptionInternal(
 	      ex, apiError, headers, apiError.getStatus(), request);
 	}
@@ -48,16 +60,11 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 	  HttpStatus status, WebRequest request) {
 	    String error = ex.getParameterName() + " parameter is missing";
 	     
-	    ApiError apiError = 
-	      new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), error);
+	    ApiErrorDTO apiError = 
+	      new ApiErrorDTO(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), error);
 	    return new ResponseEntity<Object>(
-	      apiError, new HttpHeaders(), apiError.getStatus());
+	      apiError, JsonHeader(), apiError.getStatus());
 	}
-	
-	@ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<Object> handleConstraintViolation(ConstraintViolationException ex, WebRequest request) {
-        return new ResponseEntity<>(ex.getMessage()+"PQPQPORRA", HttpStatus.BAD_REQUEST);
-    }
 
 	@ExceptionHandler({ MethodArgumentTypeMismatchException.class })
 	public ResponseEntity<Object> handleMethodArgumentTypeMismatch(
@@ -65,10 +72,10 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 	    String error = 
 	      ex.getName() + " should be of type " + ex.getRequiredType().getName();
 	 
-	    ApiError apiError = 
-	      new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), error);
+	    ApiErrorDTO apiError = 
+	      new ApiErrorDTO(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), error);
 	    return new ResponseEntity<Object>(
-	      apiError, new HttpHeaders(), apiError.getStatus());
+	      apiError, JsonHeader(), apiError.getStatus());
 	}
 	
 	@Override
@@ -83,10 +90,10 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 	      " method is not supported for this request. Supported methods are ");
 	    ex.getSupportedHttpMethods().forEach(t -> builder.append(t + " "));
 	 
-	    ApiError apiError = new ApiError(HttpStatus.METHOD_NOT_ALLOWED, 
+	    ApiErrorDTO apiError = new ApiErrorDTO(HttpStatus.METHOD_NOT_ALLOWED, 
 	      ex.getLocalizedMessage(), builder.toString());
 	    return new ResponseEntity<Object>(
-	      apiError, new HttpHeaders(), apiError.getStatus());
+	      apiError, JsonHeader(), apiError.getStatus());
 	}
 	
 	@Override
@@ -100,24 +107,32 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 	    builder.append(" media type is not supported. Supported media types are ");
 	    ex.getSupportedMediaTypes().forEach(t -> builder.append(t + ", "));
 	 
-	    ApiError apiError = new ApiError(HttpStatus.UNSUPPORTED_MEDIA_TYPE, 
+	    ApiErrorDTO apiError = new ApiErrorDTO(HttpStatus.UNSUPPORTED_MEDIA_TYPE, 
 	      ex.getLocalizedMessage(), builder.substring(0, builder.length() - 2));
 	    return new ResponseEntity<Object>(
-	      apiError, new HttpHeaders(), apiError.getStatus());
+	      apiError, JsonHeader(), apiError.getStatus());
 	}
+	
+	@ExceptionHandler({	ConstraintViolationException.class })
+    public ResponseEntity<Object> handleConstraintViolation(ConstraintViolationException ex, WebRequest request) {
+		ApiErrorDTO apiError = new ApiErrorDTO(
+			HttpStatus.CONFLICT, "Não foi possível realizar a operação. Por favor verifique os dados informados.", ex.getLocalizedMessage());
+  	    return new ResponseEntity<Object>(
+	  	      apiError, JsonHeader(), apiError.getStatus());
+    }
 	
 	@ExceptionHandler({ DataIntegrityViolationException.class })
 	public ResponseEntity<Object> handleDataIntegrityViolation(DataIntegrityViolationException ex, WebRequest request) {
-	    ApiError apiError = new ApiError(
-	      HttpStatus.CONFLICT, ex.getLocalizedMessage(), "Registro já existente.");
+	    ApiErrorDTO apiError = new ApiErrorDTO(
+	    	HttpStatus.CONFLICT, msg.getString("constraint-error"), ex.getLocalizedMessage());
 	    return new ResponseEntity<Object>(
-	      apiError, new HttpHeaders(), apiError.getStatus());
+	      apiError, JsonHeader(), apiError.getStatus());
 	}
 	
 	@ExceptionHandler({ Exception.class })
 	public ResponseEntity<Object> handleAll(Exception ex, WebRequest request) {
-	    ApiError apiError = new ApiError(
-	      HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), "Ocorreu um erro inesperado. Contate um administrador.");
+	    ApiErrorDTO apiError = new ApiErrorDTO(
+	      HttpStatus.BAD_REQUEST, "Ocorreu um erro inesperado. Contate um administrador.", ex.getLocalizedMessage());
 	    return new ResponseEntity<Object>(
 	      apiError, new HttpHeaders(), apiError.getStatus());
 	}

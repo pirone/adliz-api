@@ -9,7 +9,8 @@ public class PagedResultDTO {
 	private List<?> content;
 	private Integer totalPages;
 	private Long totalItems;
-	
+	private String message;
+
 	public PagedResultDTO(List<?> content) {
 		this.content = content;
 	}
@@ -35,6 +36,9 @@ public class PagedResultDTO {
 		this.totalPages = totalPages;
 		this.totalItems = totalItems;
 	}
+	public PagedResultDTO(String message) {
+		this.message = message;
+	}
 	
 	public List<?> getContent() {
 		return content;
@@ -57,6 +61,13 @@ public class PagedResultDTO {
 		this.totalItems = totalItems;
 	}
 
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
 	
 
 }

@@ -4,7 +4,6 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
@@ -39,9 +38,10 @@ public class ServiceController extends GenericController {
 	}
 	
 	@PostMapping("/service")
-	public String createService(@Valid @RequestBody Service service, Errors errors) {
+	public ResponseEntity<?> createService(@Valid @RequestBody Service service, Errors errors) {
 		serviceRepository.save(service);
-		return service.getName() +" incluído(a) com sucesso.";
+		PagedResultDTO result = new PagedResultDTO(service.getName() +" incluído(a) com sucesso.");
+		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 
 	

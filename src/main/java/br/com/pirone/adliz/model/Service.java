@@ -2,14 +2,16 @@ package br.com.pirone.adliz.model;
 
 import java.math.BigDecimal;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "service")
@@ -19,17 +21,20 @@ public class Service {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	@NotBlank
+	@Column(unique = true)
 	private String name;
 	
 	private String description;
 	
+	@Column(nullable = false) 
 	private BigDecimal price;
 	
 	@OneToOne
 	@JoinColumn(name = "category_id")
 	private ServiceCategory category;
 	
-	private Boolean status;
+	private Boolean status = true;
 	
 	public Service() {}
 	
