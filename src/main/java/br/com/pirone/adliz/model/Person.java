@@ -1,5 +1,6 @@
 package br.com.pirone.adliz.model;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -17,6 +18,10 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotBlank;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import br.com.pirone.adliz.util.DateUtils;
+
 @Entity
 @Table(name = "person")
 public class Person {
@@ -33,7 +38,8 @@ public class Person {
 	@Column(unique = true)
 	private String cpf;
 	
-    @Temporal(TemporalType.TIMESTAMP)
+	@JsonFormat(pattern="dd/MM/yyyy")
+    @Temporal(TemporalType.DATE)
     private Date birth_date;
 	
     @ElementCollection
@@ -75,9 +81,14 @@ public class Person {
 	}
 
 	public void setCpf(String cpf) {
-		this.cpf = cpf;
+		String cpfFormatado = cpf.replaceAll("\\.", "").replace("-", "");
+		this.cpf = cpfFormatado;
 	}
 
+//	public String getBirth_date() {
+//		return DateUtils.getFormatedDateAsString(birth_date);
+//	}
+	
 	public Date getBirth_date() {
 		return birth_date;
 	}
@@ -85,6 +96,11 @@ public class Person {
 	public void setBirth_date(Date birth_date) {
 		this.birth_date = birth_date;
 	}
+	
+	public void setBirth_date(String birth_date) throws ParseException {
+		this.birth_date = DateUtils.getFormatedStringAsDate(birth_date);
+	}
+
 
 	public Set<String> getPhones() {
 		return phones;

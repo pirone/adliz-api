@@ -77,6 +77,11 @@ public class Service {
 	public void setPrice(BigDecimal price) {
 		this.price = price;
 	}
+	
+	public void setPrice(String price) {
+		String precoFormatado = price.replaceAll("\\.", "").replaceAll(",", ".");
+		this.price = new BigDecimal(precoFormatado);
+	}
 
 	public ServiceCategory getCategory() {
 		return category;
