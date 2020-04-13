@@ -21,6 +21,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import br.com.pirone.adliz.util.NumberUtils;
+
 @Entity
 @Table(name = "employee")
 @EntityListeners(AuditingEntityListener.class)
@@ -75,12 +77,17 @@ public class Employee {
 		this.person = person;
 	}
 
-	public Double getComissionRate() {
-		return comissionRate;
+	public String getComissionRate() {
+		return NumberUtils.doubleToDecimalString(comissionRate);
 	}
 
 	public void setComissionRate(Double comissionRate) {
 		this.comissionRate = comissionRate;
+	}
+	
+	public void setComissionRate(String comissionRate) {
+		String formattedComissionRate = comissionRate.replaceAll("\\.", "").replaceAll(",", ".");
+		this.comissionRate = new Double(formattedComissionRate);
 	}
 
 	public Date getCreatedAt() {

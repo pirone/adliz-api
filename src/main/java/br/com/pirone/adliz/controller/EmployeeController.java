@@ -65,6 +65,7 @@ public class EmployeeController extends GenericController {
 		employee.getPerson().setEmail(employeeDetails.getPerson().getEmail());
 		employee.getPerson().setAdresses(employeeDetails.getPerson().getAdresses());
 		employee.getPerson().setPhones(employeeDetails.getPerson().getPhones());
+		employee.setComissionRate(employeeDetails.getComissionRate());
 		
 		employeeRepository.save(employee);
 		
