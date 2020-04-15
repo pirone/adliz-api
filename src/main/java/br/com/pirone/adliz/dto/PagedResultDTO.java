@@ -15,9 +15,9 @@ public class PagedResultDTO {
 		this.content = content;
 	}
 	
-	public PagedResultDTO(List<?> content, Integer totalPages) {
+	public PagedResultDTO(List<?> content, Long totalItems) {
 		this.content = content;
-		this.totalPages = totalPages;
+		this.totalItems = totalItems;
 	}
 	
 	public PagedResultDTO(Page<?> content, Integer totalPages) {

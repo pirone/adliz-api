@@ -1,5 +1,7 @@
 package br.com.pirone.adliz.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +37,13 @@ public class ServiceController extends GenericController {
 		Page<Service> result = serviceRepository.findByOrderById(setPagination(page, defaultPerPage));
 		PagedResultDTO pagedResult = new PagedResultDTO(result, result.getTotalPages(), result.getTotalElements());
 		return new ResponseEntity<PagedResultDTO>(pagedResult, HttpStatus.OK);
+	}
+	
+	@GetMapping("/service/all/")
+	public ResponseEntity<?> getAllCustomers() {
+		List<Service> list = serviceRepository.findAll();
+		PagedResultDTO pagedResult = new PagedResultDTO(serviceRepository.findAll(), Long.valueOf(list.size()));
+		return new ResponseEntity<Object>(pagedResult, HttpStatus.OK);
 	}
 	
 	@PostMapping("/service")

@@ -1,6 +1,8 @@
 package br.com.pirone.adliz.controller;
 
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.pirone.adliz.dto.EmployeeDTO;
 import br.com.pirone.adliz.dto.PagedResultDTO;
 import br.com.pirone.adliz.exception.ResourceNotFoundException;
 import br.com.pirone.adliz.model.Employee;
@@ -37,6 +40,15 @@ public class EmployeeController extends GenericController {
 		Page<Employee> result = employeeRepository.findByOrderById(setPagination(page, defaultPerPage));
 		PagedResultDTO pagedResult = new PagedResultDTO(result, result.getTotalPages(), result.getTotalElements());
 		return new ResponseEntity<PagedResultDTO>(pagedResult, HttpStatus.OK);
+	}
+	
+	@GetMapping("/employee/all/")
+	public ResponseEntity<?> getAllCustomers() {
+		List<EmployeeDTO> resultado = new ArrayList<>();
+		List<Employee> list = employeeRepository.findAll();
+		list.stream().forEach(employee -> resultado.add(new EmployeeDTO(employee)));
+		PagedResultDTO pagedResult = new PagedResultDTO(resultado, Long.valueOf(list.size()));
+		return new ResponseEntity<Object>(pagedResult, HttpStatus.OK);
 	}
 	
 	@PostMapping("/employee")
