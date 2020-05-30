@@ -11,16 +11,6 @@ import javax.validation.constraints.NotNull;
 @Table(name = "payment_method")
 public class PaymentMethod {
 	
-	public PaymentMethod() {}
-	
-	public PaymentMethod(String id) {
-		this.id = Long.valueOf(id);
-	}
-	
-	public PaymentMethod(int id) {
-		this.id = Long.valueOf(id);
-	}
-	
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private Long id;

@@ -13,6 +13,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "entry")
@@ -22,10 +23,12 @@ public class Entry {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	@NotNull
 	@OneToOne
 	@JoinColumn(name = "employee_id")
 	private Employee employee;
 	
+	@NotNull
 	@OneToOne
 	@JoinColumn(name = "customer_id")
 	private Customer customer;

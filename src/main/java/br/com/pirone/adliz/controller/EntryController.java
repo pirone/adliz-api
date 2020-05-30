@@ -1,5 +1,8 @@
 package br.com.pirone.adliz.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.pirone.adliz.dto.EntryDTO;
 import br.com.pirone.adliz.dto.PagedResultDTO;
 import br.com.pirone.adliz.exception.ResourceNotFoundException;
 import br.com.pirone.adliz.model.Entry;
@@ -32,13 +36,15 @@ public class EntryController extends GenericController {
 	
 	@GetMapping("/entry/all/{page}")
 	public ResponseEntity<PagedResultDTO> getAllEntrys(@PathVariable(value = "page")int page) {
+		List<EntryDTO> resultado = new ArrayList<>();
 		Page<Entry> result = entryRepository.findByOrderById(setPagination(page, defaultPerPage));
-		PagedResultDTO pagedResult = new PagedResultDTO(result, result.getTotalPages(), result.getTotalElements());
+		result.forEach(entry -> resultado.add(new EntryDTO(entry)));
+		PagedResultDTO pagedResult = new PagedResultDTO(resultado, result.getTotalPages(), result.getTotalElements());
 		return new ResponseEntity<PagedResultDTO>(pagedResult, HttpStatus.OK);
 	}
 	
-	@PostMapping("/entry")
-	public ResponseEntity<?> createEntry(@Valid @RequestBody Entry entry, Errors errors) {
+	@PostMapping(path="/entry", consumes = "application/json", produces = "application/json")
+	public ResponseEntity<?> createEntry(@RequestBody @Valid Entry entry, Errors errors) {
 		entryRepository.save(entry);
 		PagedResultDTO result = new PagedResultDTO("Registro incluído(a) com sucesso.");
 		return new ResponseEntity<>(result, HttpStatus.OK);

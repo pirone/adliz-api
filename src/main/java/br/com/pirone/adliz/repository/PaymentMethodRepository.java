@@ -4,10 +4,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import br.com.pirone.adliz.model.Service;
+import br.com.pirone.adliz.model.PaymentMethod;
 
-public interface ServiceRepository extends JpaRepository<Service, Long> {
+public interface PaymentMethodRepository extends JpaRepository<PaymentMethod, Long> {
 	
-	Page<Service> findByOrderById(Pageable pagination);
+	Page<PaymentMethod> findByOrderById(Pageable pagination);
 
 }
